@@ -23,10 +23,11 @@ jobs:
       - name: Install dependencies
         run: |
           echo "Installing dependencies..."
-          # Example: Install Chocolatey and any required packages
+          # Install Chocolatey if not already installed
           if (-not (Test-Path "$env:ProgramFiles\chocolatey\bin\choco.exe")) {
             iex (New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')
           }
+          # Install any required dependencies using Chocolatey
           choco install <your-dependency>
 
       - name: Deploy LiteManager
