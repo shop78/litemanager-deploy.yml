@@ -1,0 +1,49 @@
+name: LiteManager Deployment Workflow
+
+on:
+  push:
+    branches:
+      - main  # Trigger this workflow on push to the main branch
+
+jobs:
+  deploy:
+    runs-on: windows-latest  # Use the latest Windows runner
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history for all branches
+
+      - name: Set up environment
+        run: |
+          echo "Setting up environment..."
+          # Additional setup commands if needed
+
+      - name: Install dependencies
+        run: |
+          echo "Installing dependencies..."
+          # Example: Install Chocolatey and any required packages
+          if (-not (Test-Path "$env:ProgramFiles\chocolatey\bin\choco.exe")) {
+            iex (New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')
+          }
+          choco install <your-dependency>
+
+      - name: Deploy LiteManager
+        run: |
+          echo "Deploying LiteManager..."
+          # Run the deployment script
+          powershell -File .\DeployLiteManager.ps1
+        env:
+          LM_ADMIN_USERNAME: ${{ secrets.LM_ADMIN_USERNAME }}
+          LM_ADMIN_PASSWORD: ${{ secrets.LM_ADMIN_PASSWORD }}
+
+      - name: Verify Installation
+        run: |
+          echo "Verifying LiteManager installation..."
+          # Run the verification script
+          powershell -File .\VerifyLiteManager.ps1
+
+      - name: Print environment variables
+        run: |
+          echo "Node version: $(node -v)"  # Example environment variable
